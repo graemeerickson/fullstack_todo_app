@@ -23,7 +23,14 @@ app.get('*', function (req, res) {
 });
 
 /* Listen on PORT */
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, function () {
-    console.log(`Listening on port ${PORT}`)
-});
+app.set('port', process.env.PORT || 3001)
+
+app.listen(app.get('port'), () => {
+  console.log(`✅ PORT: ${app.get('port')} 🌟`)
+})
+
+// Local info below
+// const PORT = process.env.PORT || 3000;
+// app.listen(PORT, function () {
+//     console.log(`Listening on port ${PORT}`)
+// });
