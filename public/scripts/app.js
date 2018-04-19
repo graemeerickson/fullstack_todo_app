@@ -11,7 +11,7 @@ $(document).ready(function(){
   //   success: handleSuccess,
   //   error: handleError
   // });
-
+  // 
   $.ajax({
     method: 'GET',
     url: '/api/tasks',
@@ -27,6 +27,16 @@ $(document).ready(function(){
       data: $(this).serialize(),
       success: newTaskSuccess,
       error: newTaskError
+    });
+  });
+
+  $todoList.on('click', '.deleteBtn', function() {
+    console.log('clicked delete button to', '/api/tasks/'+$(this).attr('data-id'));
+    $.ajax({
+      method: 'DELETE',
+      url: '/api/tasks/'+$(this).attr('data-id'),
+      success: deleteTaskSuccess,
+      error: deleteTaskError
     });
   });
 
@@ -50,7 +60,7 @@ $(document).ready(function(){
     $todoList.empty();
 
     // pass `allTodos` into the template function
-    var taskHtml = getAllTasksHtml(allTasks);
+    let taskHtml = getAllTasksHtml(allTasks);
 
     // append html to the view
     $todoList.append(taskHtml);
@@ -62,7 +72,7 @@ $(document).ready(function(){
   }
 
   function handleError(e) {
-    $('#taskTarget').text('Failed to load todos, is the server working?');
+    $('#taskTarget').text('Failed to load tasks, is the server working?');
   }
 
   function newTaskSuccess(json) {
@@ -72,7 +82,26 @@ $(document).ready(function(){
   }
 
   function newTaskError() {
-    console.log('new todo error!');
+    console.log('new task error!');
+  }
+
+  function deleteTaskSuccess(json) {
+    let task = json;
+    console.log(json);
+    let taskId = task._id;
+    console.log('delete task', taskId);
+    // find the task with the correct ID and remove it from our allTasks array
+    for(let index = 0; index < allTasks.length; index++) {
+      if(allTasks[index]._id === taskId) {
+        allTasks.splice(index, 1);
+        break;  // we found our task - no reason to keep searching (this is why we didn't use forEach)
+      }
+    }
+    render();
+  }
+
+  function deleteTaskError() {
+    console.log('delete task error!');
   }
 
 });
